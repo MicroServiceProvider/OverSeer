@@ -2,11 +2,15 @@
 using System.Net;
 using System.Net.Http;
 using Akka.Actor;
+using Akka.Event;
+using Akka.Routing;
 
 namespace OverSeer.Actors
 {
     public class CheckHealthActor : ReceiveActor
     {
+        private readonly ILoggingAdapter _log = Context.GetLogger();
+
         public CheckHealthActor()
         {
             this.Receive<string>(serviceUrl =>
@@ -21,7 +25,7 @@ namespace OverSeer.Actors
                 }
                 catch (Exception ex)
                 {
-                    //TODO: How to log this exception ?
+                    _log.Error(ex, "Error");
                     this.Sender.Tell(new Tuple<string, bool>(serviceUrl, false));
                 }
             });
