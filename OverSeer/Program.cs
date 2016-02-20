@@ -3,6 +3,13 @@ using System.Collections;
 using Akka.Actor;
 using OverSeer.Actors;
 
+// Potential TODO:
+// contribute with documentation to akka project
+
+// Questions
+// How to create actor ref using the path system ?
+// What is the best practice of injecting actors
+
 // PROJECT IDEA 0
 // Microservice monitoring tool
 // for each microservice Create an actor that does check the server status and reports the result
