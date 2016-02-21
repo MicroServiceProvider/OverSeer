@@ -1,0 +1,33 @@
+{
+  "name": "overseer-web",
+  "version": "0.0.1",
+  "description": "Web interface for overseer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"build" : "webpack",
+	"start" : "webpack-dev-server --port 4000"	
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michal-franc/OverSeer.git"
+  },
+  "author": "Michal Franc",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.5.2",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-react-hmre": "^1.1.0",
+    "css-loader": "^0.23.1",
+    "react": "^0.14.7",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "bugs": {
+    "url": "https://github.com/michal-franc/OverSeer/issues"
+  },
+  "homepage": "https://github.com/michal-franc/OverSeer#readme"
+}
