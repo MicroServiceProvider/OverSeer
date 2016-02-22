@@ -21,37 +21,51 @@ open Newtonsoft.Json
 
 type EndpointResponse = {
     port : uint16;
+    url : string;
     name : string;
     t: string;
-    deps : string list
+    deps : EndpointResponse list
+}
+
+let emptyEndpoint = {
+    port = 0us;
+    url = "";
+    name = "";
+    t = "";
+    deps = [];
 }
 
 let listOfServices = [
     ("GG.Web.Crowdfunding", "ms", [
         "GG.Service.IdentityVerification"; "GG.Service.Project"; "GG.Service.Profile"; 
-        "GG.Service.Crm.ExactTarget"; "GG.Service.User"; "GG.Service.Project.RiskAnalysis";
+        "GG.Service.Crm"; "GG.Service.User"; "GG.Service.Project.RiskAnalysis";
         "GG.Imaging.Read"; "GG.Imaging.Write"; "GG.Service.Project.Registration"; "GG.Service.AB";
         "PayPal";
      ]);
-     ("GG.Service.IdentityVerification", "ms", []);
+     ("GG.Service.IdentityVerification", "ms", [
+        "VerifyIntegrity"; "Unfido";"CreditCallService";"PayPal";"GG.Service.User"
+     ]);
      ("GG.Service.Project", "ms", []);
      ("GG.Service.Profile", "ms", []);
-     ("GG.Service.Crm.ExactTarget", "ms", []);
+     ("GG.Service.Crm", "ms", []);
      ("GG.Service.User", "ms", []);
      ("GG.Imaging.Read", "ms", []);
      ("GG.Imaging.Write", "ms", []);
      ("GG.Service.Project.Registration", "ms", []);
      ("GG.Service.AB", "ms", []);
      ("PayPal", "external", []);
+     ("VerifyIntegrity", "external", []);
+     ("Unfido", "external", []);
+     ("CreditCallService", "external", []);
+     ("GG.Service.User", "ms", []);
      ("BB01", "db", []);
      ("User", "db", []);
      ("Project", "db", []);
-     ("GG.Service.IdentityVerification", "ms", []);
+     ("GG.Service.Project.RiskAnalysis", "ms", []);
 ]
 
 //TODO:
-// 1. I have a simple function that lets me spawn a server with a proper json format
-//  - i can specify port number for dependancies
+// 1. i have a simple array of services with its types and proper servers and endpoint responses are created
 
 let localhost = IPAddress.Parse("127.0.0.1")
 
@@ -60,10 +74,22 @@ let MimeJSON = Writers.setMimeType "application/json"
 let toPort port =
     Sockets.Port.Parse(port.ToString());
 
+let createEmptyChildEndpoints list =
+    list |> List.fold(fun (array) (s) -> ({ emptyEndpoint with name = s })::array ) []
+
+let fillInEndpoint emptyE fillinE =
+    { emptyE with t = fillinE.t; url = (sprintf "http://localhost:%i" fillinE.port); port = fillinE.port }
+
+////todo
+////1. go through initial list and fill in deps array
+let fillUrlPortInChildEndpoint e list=
+    e.deps |> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
+
 let createEndpoints list =
     let startPort = 3000;
-    list 
-    |> List.fold(fun (array, port) (n, t, d) -> ({port = port |> toPort; name = n; t = t; deps = d }::array, port + 1)) ([], startPort)
+    let initialList = list |> List.fold(fun (array, port) (n, t, d) -> ({url = (sprintf "http://localhost:%i" port); port = port |> toPort; name = n; t = t; deps = (createEmptyChildEndpoints d) }::array, port + 1)) ([], startPort) |> fst
+    let childrenList = initialList |> List.map(fun i -> { i with deps = (fillUrlPortInChildEndpoint i initialList) })
+    childrenList
     
 
 let app endpoint =
@@ -83,7 +109,6 @@ let main argv =
 
     let taskList = listOfServices 
                    |> createEndpoints
-                   |> fst
                    |> List.fold(fun array e -> (startServer e)::array) []
                    |> List.toArray
 
