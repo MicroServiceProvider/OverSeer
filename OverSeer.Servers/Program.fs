@@ -64,9 +64,6 @@ let listOfServices = [
      ("GG.Service.Project.RiskAnalysis", "ms", []);
 ]
 
-//TODO:
-// 1. i have a simple array of services with its types and proper servers and endpoint responses are created
-
 let localhost = IPAddress.Parse("127.0.0.1")
 
 let MimeJSON = Writers.setMimeType "application/json"
@@ -80,8 +77,6 @@ let createEmptyChildEndpoints list =
 let fillInEndpoint emptyE fillinE =
     { emptyE with t = fillinE.t; url = (sprintf "http://localhost:%i" fillinE.port); port = fillinE.port }
 
-////todo
-////1. go through initial list and fill in deps array
 let fillUrlPortInChildEndpoint e list=
     e.deps |> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
 
