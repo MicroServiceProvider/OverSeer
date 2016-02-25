@@ -54,7 +54,7 @@ module.exports = {
 		  }
 		]
   },
-  pluginy: [
+  plugins: [
     new webpack.HotModuleReplacementPlugin()
   ]
  }
