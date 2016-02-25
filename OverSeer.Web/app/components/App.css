@@ -1,0 +1,28 @@
+
+.link {
+  stroke: green;
+}
+
+.node text {
+  font-size: 13px;
+  stroke: #333;
+  cursos: pointer;
+}
+
+.node > circle status-ok {
+  stroke: black;
+  stroke-width: 1px;
+  fill: green;
+}
+
+.node > circle status-undefined {
+  stroke: black;
+  stroke-width: 1px;
+  fill: gray;
+}
+
+.node > circle status-bad {
+  stroke: black;
+  stroke-width: 1px;
+  fill: red;
+}
