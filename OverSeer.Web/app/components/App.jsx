@@ -1,119 +1,10 @@
 import './App.css';
 import React, {Component} from 'react';
 import d3 from 'd3';
+import testNodes from './test_nodes.json';
 
 export default class App extends Component {
 	render() {
-
-var structure = {
-  "name" : "GG.Web.Crowdfunding",
-  "type" : "service",
-  "dependancies" : [
-	{ 
-	  "name" : "GG.Service.IdentityVerification",
-	  "type" : "service",
-	  "dependancies" : [
-  		{ "name" : "NetVerify", "type" : "external" },
-  		{ "name" : "Onfido", "type" : "external" },
-  		{ "name" : "CallCredit", "type" : "external" },
-  		{ "name" : "PayPal", "type" : "external" },
-  		{ "name" : "GG.Service.User", "type" : "service" }
-	  ]
-	},
-	{
-	  "name" : "GG.Service.Project",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "EventStore", "type" : "internal" },
-	    { "name" : "BB01", "type" : "db" }
-	   ]
-	},
-	{
-	  "name" : "GG.Service.Profile",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "GG.Service.User", "type" : "service" },
-	    { "name" : "GG.Care.Read", "type" : "service" },
-	    { "name" : "GG.Service.Charity", "type" : "service", "dependancies" : [ {"name" : "BB01", "type" : "db" } ] },
-	    { "name" : "BB01", "type" : "db" },
-	    { "name" : "Membached", "type" : "db" },
-	    { "name" : "GG.Profile", "type" : "db" },
-	    { "name" : "EventStore", "type" : "internal" }
-	   ]
-	},
-	{
-	  "name" : "GG.Service.Crm.ExactTarget",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "ExactTarget", "type" : "external" }
-	   ]
-	},
-	{
-	  "name" : "GG.Service.User",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "GG.Service.IpLocale", "type" : "service" },
-	    { "name" : "BB01", "type" : "db" },
-	    { "name" : "GG.User", "type" : "db" }
-	   ]
-	},	
-	{
-	  "name" : "GG.Service.AddressLookup",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "PostCodeAnywhere", "type" : "external" },
-      { "name" : "GetAddressIo", "type" : "external" }
-	   ]
-	},
-	{
-	  "name" : "GG.Service.Project.RiskAnalysis",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "EventStore", "type" : "internal" },
-	    { "name" : "GG.Service.Project", "type" : "service" }
-	   ]
-	},
-	{
-	  "name" : "GG.Imaging.Read",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "S3", "type" : "external" }
-	   ]
-	},
-	{
-	  "name" : "GG.Imaging.Write",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "S3", "type" : "external" }
-	   ]
-	},
-	{
-	  "name" : "GG.Service.Project.Registration",
-	  "type" : "service",
-	  "dependancies" : [
-	    { "name" : "GG.FMS", "type" : "service" },
-	    { "name" : "GG.Service.User", "type" : "service" },
-	    { "name" : "GG.Service.AB", "type" : "service" },
-	    { "name" : "EventStore", "type" : "internal" },
-	    { "name" : "BB01", "type" : "db" }
-	   ]
-	},
-	{
-	  "name" : "GG.Service.AB",
-	  "type" : "service",   
-	  "dependancies" : [
-	    { "name" : "AB", "type" : "db" }
-	   ]
-	},
-	{
-	 "name" : "PayPal",
-	 "type" : "external"
-	}
-	]
-};
-
-// Extract the nodes
-// Extract the links!!
 
 var objects = 
 	{ 
@@ -156,7 +47,7 @@ var transform = function (structure, objects) {
   return objects;
 };
 
-var objects = transform(structure, objects);
+var objects = transform(testNodes, objects);
 var width = window.innerWidth, height = window.innerHeight;
 
 var svg = d3.select("body").append("svg")

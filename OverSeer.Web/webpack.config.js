@@ -15,7 +15,7 @@ module.exports = {
     app: PATHS.app
   },
   resolve: {
-	  extensions: ['', '.js', '.jsx']
+	  extensions: ['', '.js', '.jsx', '.json']
   },
   output: {
     path: PATHS.build,
@@ -51,7 +51,13 @@ module.exports = {
 			test: /\.jsx?$/,
 			loaders: ['babel?cacheDirectory'],
 			include: PATHS.app
+		  },
+		  {
+			test: /\.json?$/,
+			loaders: ['json'],
+			include: PATHS.app
 		  }
+
 		]
   },
   plugins: [
