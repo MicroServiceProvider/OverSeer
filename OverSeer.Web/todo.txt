@@ -1,0 +1,4 @@
+- make the drawing of the second layer
+  we can do a js call
+  we can also make actor pattern to prepare this data and expose it somewhere ?
+  potentialy actor could expose tcp endpoint 

@@ -29,7 +29,7 @@ var forEachChildNode = function(node, func) {
 }
 
 export default function transform (structure) {
-  objects.addNode({ "name": structure.name, "type": structure.type });
+  objects.addNode({ "name": structure.name, "type": structure.serviceType });
   forEachChildNode(structure, (c, p) => objects.addNode(c));
   forEachChildNode(structure, (c, p) => {
   	let pOrder = objects.getOrder(p.name);
