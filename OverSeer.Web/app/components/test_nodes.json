@@ -1,106 +1,106 @@
  {
   "name" : "GG.Web.Crowdfunding",
-  "type" : "service",
+  "serviceType" : "service",
   "dependancies" : [
 	{ 
 	  "name" : "GG.Service.IdentityVerification",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-  		{ "name" : "NetVerify", "type" : "external" },
-  		{ "name" : "Onfido", "type" : "external" },
-  		{ "name" : "CallCredit", "type" : "external" },
-  		{ "name" : "PayPal", "type" : "external" },
-  		{ "name" : "GG.Service.User", "type" : "service" }
+  		{ "name" : "NetVerify", "serviceType" : "external" },
+  		{ "name" : "Onfido", "serviceType" : "external" },
+  		{ "name" : "CallCredit", "serviceType" : "external" },
+  		{ "name" : "PayPal", "serviceType" : "external" },
+  		{ "name" : "GG.Service.User", "serviceType" : "service" }
 	  ]
 	},
 	{
 	  "name" : "GG.Service.Project",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "EventStore", "type" : "internal" },
-	    { "name" : "BB01", "type" : "db" }
+	    { "name" : "EventStore", "serviceType" : "internal" },
+	    { "name" : "BB01", "serviceType" : "db" }
 	   ]
 	},
 	{
 	  "name" : "GG.Service.Profile",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "GG.Service.User", "type" : "service" },
-	    { "name" : "GG.Care.Read", "type" : "service" },
-	    { "name" : "GG.Service.Charity", "type" : "service", "dependancies" : [ {"name" : "BB01", "type" : "db" } ] },
-	    { "name" : "BB01", "type" : "db" },
-	    { "name" : "Membached", "type" : "db" },
-	    { "name" : "GG.Profile", "type" : "db" },
-	    { "name" : "EventStore", "type" : "internal" }
+	    { "name" : "GG.Service.User", "serviceType" : "service" },
+	    { "name" : "GG.Care.Read", "serviceType" : "service" },
+	    { "name" : "GG.Service.Charity", "serviceType" : "service", "dependancies" : [ {"name" : "BB01", "type" : "db" } ] },
+	    { "name" : "BB01", "serviceType" : "db" },
+	    { "name" : "Membached", "serviceType" : "db" },
+	    { "name" : "GG.Profile", "serviceType" : "db" },
+	    { "name" : "EventStore", "serviceType" : "internal" }
 	   ]
 	},
 	{
 	  "name" : "GG.Service.Crm.ExactTarget",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "ExactTarget", "type" : "external" }
+	    { "name" : "ExactTarget", "serviceType" : "external" }
 	   ]
 	},
 	{
 	  "name" : "GG.Service.User",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "GG.Service.IpLocale", "type" : "service" },
-	    { "name" : "BB01", "type" : "db" },
-	    { "name" : "GG.User", "type" : "db" }
+	    { "name" : "GG.Service.IpLocale", "serviceType" : "service" },
+	    { "name" : "BB01", "serviceType" : "db" },
+	    { "name" : "GG.User", "serviceType" : "db" }
 	   ]
 	},	
 	{
 	  "name" : "GG.Service.AddressLookup",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "PostCodeAnywhere", "type" : "external" },
-      { "name" : "GetAddressIo", "type" : "external" }
+	    { "name" : "PostCodeAnywhere", "serviceType" : "external" },
+      { "name" : "GetAddressIo", "serviceType" : "external" }
 	   ]
 	},
 	{
 	  "name" : "GG.Service.Project.RiskAnalysis",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "EventStore", "type" : "internal" },
-	    { "name" : "GG.Service.Project", "type" : "service" }
+	    { "name" : "EventStore", "serviceType" : "internal" },
+	    { "name" : "GG.Service.Project", "serviceType" : "service" }
 	   ]
 	},
 	{
 	  "name" : "GG.Imaging.Read",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "S3", "type" : "external" }
+	    { "name" : "S3", "serviceType" : "external" }
 	   ]
 	},
 	{
 	  "name" : "GG.Imaging.Write",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "S3", "type" : "external" }
+	    { "name" : "S3", "serviceType" : "external" }
 	   ]
 	},
 	{
 	  "name" : "GG.Service.Project.Registration",
-	  "type" : "service",
+	  "serviceType" : "service",
 	  "dependancies" : [
-	    { "name" : "GG.FMS", "type" : "service" },
-	    { "name" : "GG.Service.User", "type" : "service" },
-	    { "name" : "GG.Service.AB", "type" : "service" },
-	    { "name" : "EventStore", "type" : "internal" },
-	    { "name" : "BB01", "type" : "db" }
+	    { "name" : "GG.FMS", "serviceType" : "service" },
+	    { "name" : "GG.Service.User", "serviceType" : "service" },
+	    { "name" : "GG.Service.AB", "serviceType" : "service" },
+	    { "name" : "EventStore", "serviceType" : "internal" },
+	    { "name" : "BB01", "serviceType" : "db" }
 	   ]
 	},
 	{
 	  "name" : "GG.Service.AB",
-	  "type" : "service",   
+	  "serviceType" : "service",   
 	  "dependancies" : [
-	    { "name" : "AB", "type" : "db" }
+	    { "name" : "AB", "serviceType" : "db" }
 	   ]
 	},
 	{
 	 "name" : "PayPal",
-	 "type" : "external"
+	 "serviceType" : "external"
 	}
 	]
 }
