@@ -13,6 +13,7 @@ open Suave.Successful
 open Suave.Redirection
 open Suave.RequestErrors
 open Suave.WebPart
+open Suave.Writers
 open System.Net
 open System.Threading
 open System
@@ -23,16 +24,18 @@ type EndpointResponse = {
     port : uint16;
     url : string;
     name : string;
-    t: string;
-    deps : EndpointResponse list
+    serviceType : string;
+    status : bool;
+    dependancies : EndpointResponse list
 }
 
 let emptyEndpoint = {
     port = 0us;
     url = "";
     name = "";
-    t = "";
-    deps = [];
+    serviceType = "";
+    status = false;
+    dependancies = [];
 }
 
 let listOfServices = [
@@ -75,22 +78,21 @@ let createEmptyChildEndpoints list =
     list |> List.fold(fun (array) (s) -> ({ emptyEndpoint with name = s })::array ) []
 
 let fillInEndpoint emptyE fillinE =
-    { emptyE with t = fillinE.t; url = (sprintf "http://localhost:%i" fillinE.port); port = fillinE.port }
+    { emptyE with serviceType = fillinE.serviceType; url = (sprintf "http://localhost:%i" fillinE.port); port = fillinE.port }
 
 let fillUrlPortInChildEndpoint e list=
-    e.deps |> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
+    e.dependancies|> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
 
 let createEndpoints list =
     let startPort = 3000;
-    let initialList = list |> List.fold(fun (array, port) (n, t, d) -> ({url = (sprintf "http://localhost:%i" port); port = port |> toPort; name = n; t = t; deps = (createEmptyChildEndpoints d) }::array, port + 1)) ([], startPort) |> fst
-    let childrenList = initialList |> List.map(fun i -> { i with deps = (fillUrlPortInChildEndpoint i initialList) })
+    let initialList = list |> List.fold(fun (array, port) (n, t, d) -> ({url = (sprintf "http://localhost:%i" port); port = port |> toPort; name = n; serviceType = t; dependancies = (createEmptyChildEndpoints d); status = true; }::array, port + 1)) ([], startPort) |> fst
+    let childrenList = initialList |> List.map(fun i -> { i with dependancies = (fillUrlPortInChildEndpoint i initialList) })
     childrenList
     
-
 let app endpoint =
-    choose 
-        [ GET >=> choose
-            [ path "/status/health" >=> MimeJSON >=> OK (JsonConvert.SerializeObject(endpoint));
+    choose [
+        GET >=> choose
+            [ path "/status/health" >=> MimeJSON >=> setHeader "Access-Control-Allow-Origin" "*" >=> OK (JsonConvert.SerializeObject(endpoint));
               path "/" >=> Redirection.redirect "/status/health" ]
         ]
 
