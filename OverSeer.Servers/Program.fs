@@ -75,7 +75,7 @@ let toPort port =
     Sockets.Port.Parse(port.ToString());
 
 let createEmptyChildEndpoints list =
-    list |> List.fold(fun (array) (s) -> ({ emptyEndpoint with name = s })::array ) []
+    list |> List.map(fun (name) -> ({ emptyEndpoint with name = name }))
 
 let fillInEndpoint emptyE fillinE =
     { emptyE with serviceType = fillinE.serviceType; url = (sprintf "http://localhost:%i" fillinE.port); port = fillinE.port }
@@ -108,8 +108,7 @@ let main argv =
                    |> createEndpoints
                    |> List.fold(fun array e -> (startServer e)::array) []
                    |> List.toArray
-
-    Task.WaitAll(taskList)
+                   |> Task.WaitAll
     
     printfn "%A" argv
     0 // return an integer exit code
