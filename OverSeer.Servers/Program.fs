@@ -29,14 +29,19 @@ type EndpointResponse = {
     dependancies : EndpointResponse list
 }
 
-let emptyEndpoint = {
+let toEmptyEndpoint name = {
     port = 0us;
     url = "";
-    name = "";
+    name = name;
     serviceType = "";
     status = false;
     dependancies = [];
 }
+
+let localhost = IPAddress.Parse("127.0.0.1")
+let localhostPort port = sprintf "http://localhost:%i" port
+let MimeJSON = Writers.setMimeType "application/json"
+let toPort port = Sockets.Port.Parse(port.ToString());
 
 let listOfServices = [
     ("GG.Web.Crowdfunding", "ms", [
@@ -67,27 +72,27 @@ let listOfServices = [
      ("GG.Service.Project.RiskAnalysis", "ms", []);
 ]
 
-let localhost = IPAddress.Parse("127.0.0.1")
-
-let MimeJSON = Writers.setMimeType "application/json"
-
-let toPort port =
-    Sockets.Port.Parse(port.ToString());
-
 let createEmptyChildEndpoints list =
-    list |> List.map(fun (name) -> ({ emptyEndpoint with name = name }))
+    list |> List.map toEmptyEndpoint
 
-let fillInEndpoint emptyE fillinE =
-    { emptyE with serviceType = fillinE.serviceType; url = (sprintf "http://localhost:%i" fillinE.port); port = fillinE.port }
+let fillInEndpoint endpoint data =
+    { endpoint with serviceType = data.serviceType; url = localhostPort (int data.port); port = data.port }
+
+let createEndpoint name t deps port =
+    {url = localhostPort port; port = port |> toPort; name = name; serviceType = t; dependancies = (createEmptyChildEndpoints deps); status = true; }
 
 let fillUrlPortInChildEndpoint e list=
-    e.dependancies|> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
+    e.dependancies |> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
 
 let createEndpoints list =
     let startPort = 3000;
-    let initialList = list |> List.fold(fun (array, port) (n, t, d) -> ({url = (sprintf "http://localhost:%i" port); port = port |> toPort; name = n; serviceType = t; dependancies = (createEmptyChildEndpoints d); status = true; }::array, port + 1)) ([], startPort) |> fst
-    let childrenList = initialList |> List.map(fun i -> { i with dependancies = (fillUrlPortInChildEndpoint i initialList) })
-    childrenList
+
+    // fold used here to increment port
+    let initialList = list
+                      |> List.fold(fun (array, port) (n, t, d) -> (createEndpoint n t d port)::array, port + 1) ([], startPort)
+                      // discarding port from tuple as it is not needed
+                      |> fst
+    initialList |> List.map(fun i -> { i with dependancies = (fillUrlPortInChildEndpoint i initialList) })
     
 let app endpoint =
     choose [
