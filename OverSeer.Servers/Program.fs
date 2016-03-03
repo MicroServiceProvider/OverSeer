@@ -78,20 +78,23 @@ let createEmptyChildEndpoints list =
 let fillInEndpoint endpoint data =
     { endpoint with serviceType = data.serviceType; url = localhostPort (int data.port); port = data.port }
 
-let createEndpoint name t deps port =
-    {url = localhostPort port; port = port |> toPort; name = name; serviceType = t; dependancies = (createEmptyChildEndpoints deps); status = true; }
-
 let fillUrlPortInChildEndpoint e list=
     e.dependancies |> List.map(fun i -> (fillInEndpoint i (List.find(fun x -> x.name = i.name) list)))
 
-let createEndpoints list =
-    let startPort = 3000;
+let createEndpoint name t deps port =
+    { url = localhostPort port; port = port |> toPort; name = name; serviceType = t; dependancies = (createEmptyChildEndpoints deps); status = true; }
 
-    // fold used here to increment port
+let createInitialEndpoints list =
+    let startPort = 3000
+    list
+        // fold used here to increment port
+        |> List.fold(fun (array, port) (n, t, d) -> (createEndpoint n t d port)::array, port + 1) ([], startPort)
+        // discarding port from tuple as it is not needed
+        |> fst
+
+let createEndpoints list =
     let initialList = list
-                      |> List.fold(fun (array, port) (n, t, d) -> (createEndpoint n t d port)::array, port + 1) ([], startPort)
-                      // discarding port from tuple as it is not needed
-                      |> fst
+                      |> createInitialEndpoints
     initialList |> List.map(fun i -> { i with dependancies = (fillUrlPortInChildEndpoint i initialList) })
     
 let app endpoint =
@@ -101,17 +104,18 @@ let app endpoint =
               path "/" >=> Redirection.redirect "/status/health" ]
         ]
 
+let serverConfig port =
+    { defaultConfig with bindings = [HttpBinding.mk Protocol.HTTP localhost port] }
+
+let toTaskMicroServers endpoint =
+    Task.Run(fun () -> startWebServer (serverConfig endpoint.port) (app endpoint))
+
 [<EntryPoint>]
 let main argv = 
-    let serverConfig port =
-        { defaultConfig with bindings = [HttpBinding.mk Protocol.HTTP localhost port] }
-
-    let startServer endpoint =
-        Task.Run(fun () -> startWebServer (serverConfig endpoint.port) (app endpoint))
 
     let taskList = listOfServices 
                    |> createEndpoints
-                   |> List.fold(fun array e -> (startServer e)::array) []
+                   |> List.map toTaskMicroServers
                    |> List.toArray
                    |> Task.WaitAll
     
