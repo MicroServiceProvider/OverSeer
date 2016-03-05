@@ -1,21 +1,18 @@
 var objects = 
 	{ 
-  	"counter" : -1,
 		"nodes" :[], 
 		"links" :[],
-    getOrder : function (nodeName) {
-    	let foundNode = this.nodes.filter((e, i, a) => e.name === nodeName);
-      return foundNode[0].order;
-    },
-    addLink : function (source, target) {
-    	this.links.push({"source": source, "target": target, "weight" : 1});
-    },
-    addNode : function (node) {
-    	if(this.nodes.filter((e, i, a) => e.name === node.name).length === 0) {
-        this.counter++;
-        this.nodes.push({...node, 'order' : this.counter});
-      }
-    }
+		addLink : function (source, target) {
+			if(this.nodes.filter((e, i, a) => (e.source === source && e.target === target) ||
+								(e.source === target && e.target === source)).length === 0) {
+				this.links.push({"source": source, "target": target, "weight" : 1});
+			}
+		},
+		addNode : function (node) {
+			if(this.nodes.filter((e, i, a) => e.name === node.name).length === 0) {
+			this.nodes.push({...node});
+		  }
+		}
   };
 
 var forEachChildNode = function(node, func) {
@@ -28,13 +25,11 @@ var forEachChildNode = function(node, func) {
   }
 }
 
-export default function transform (structure) {
-  objects.addNode({ "name": structure.name, "type": structure.serviceType });
-  forEachChildNode(structure, (c, p) => objects.addNode(c));
-  forEachChildNode(structure, (c, p) => {
-  	let pOrder = objects.getOrder(p.name);
-  	let cOrder = objects.getOrder(c.name);
-  	objects.addLink(cOrder, pOrder)
-  });
+export function addNodes (structure, obj) {
+  obj.addNode({ "name": structure.name, "type": structure.serviceType });
+  forEachChildNode(structure, (c, p) => obj.addNode(c));
+  forEachChildNode(structure, (c, p) => obj.addLink(c.name, p.name));
   return objects;
 };
+
+export default { addNodes, objects }
