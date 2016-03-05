@@ -39,7 +39,7 @@ let toEmptyEndpoint name = {
 }
 
 let localhost = IPAddress.Parse("127.0.0.1")
-let localhostPort port = sprintf "http://localhost:%i" port
+let localhostPort port = sprintf "http://localhost:%i/status/health" port
 let MimeJSON = Writers.setMimeType "application/json"
 let toPort port = Sockets.Port.Parse(port.ToString());
 
