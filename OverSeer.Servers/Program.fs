@@ -53,7 +53,9 @@ let listOfServices = [
      ("GG.Service.IdentityVerification", "ms", [
         "VerifyIntegrity"; "Unfido";"CreditCallService";"PayPal";"GG.Service.User"
      ]);
-     ("GG.Service.Project", "ms", []);
+     ("GG.Service.Project", "ms", [
+        "BB01"; "GG.Imaging.Read"; "GG.Imaging.Write"
+     ]);
      ("GG.Service.Profile", "ms", []);
      ("GG.Service.Crm", "ms", []);
      ("GG.Service.User", "ms", []);
