@@ -2,7 +2,7 @@ import d3 from 'd3';
 
 //http://bl.ocks.org/ericcoopey/6c602d7cb14b25c179a4
 
-var width = window.innerWidth, height = window.innerHeight;
+var width = innerWidth, height = window.innerHeight;
 
 export function create() {
 	this.addNode = node => {
@@ -37,8 +37,13 @@ export function create() {
 
 	var force = d3.layout.force()
 			      .charge(-400)
-				  .linkDistance(40)
+				  .linkDistance(50)
 				  .size([width, height]);
+
+    var drag = force.drag()
+				.on("dragstart", d => {
+					d3.select(this).classed("fixed", d.fixed = true)
+				});
 
 	var nodes = force.nodes(), links = force.links();
 
@@ -60,7 +65,7 @@ export function create() {
 
 		var nodeEnter = node.enter().append("g")
 				.attr("class", "node")
-				.call(force.drag);
+				.call(drag);
 
 		nodeEnter.append("circle")
 				.attr("r", 6)
@@ -94,10 +99,6 @@ export function create() {
             var parent = g.parentNode;
             parent.appendChild(g);
         });
-
-		//nodes.forEach(n => {
-	//		n.fixed = true;
-	//	});
 	};
 
 	return this;
