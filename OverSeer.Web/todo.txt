@@ -1,4 +1,17 @@
-- make the drawing of the second layer
-  we can do a js call
-  we can also make actor pattern to prepare this data and expose it somewhere ?
-  potentialy actor could expose tcp endpoint 
+next todo:
+- make graph less complicated so it doesnt look clutered that much
+
+ideas:
+- make a solution to have some services failing randomaly ?
+- how to decluter
+   - on click select node and make it central ?
+   - show only direct deps and not share deps ?
+   - show deps as a tree not share them that much ?
+- dependancy direction ( consumer, provider )
+- expose number of requests and make the line bigger smaller
+- token id to track error messages ?
+- make circles bigger smaller based on data ?
+- create special filter menu to change graph
+  - like number of 500s etc
+
+- zoom on scroll

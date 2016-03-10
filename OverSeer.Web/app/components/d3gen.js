@@ -5,14 +5,12 @@ import d3 from 'd3';
 var width = window.innerWidth, height = window.innerHeight;
 
 export function create() {
-	this.addNode = id => {
-		nodes.push({"id": id });
-		update();
+	this.addNode = node => {
+		nodes.push({...node, "id": node.name });
 	};
 
 	this.addLink = (source, target, value) => {
 		links.push({"source": findNode(source), "target": findNode(target), "value": value});
-		update();
 	};
 
 	var findNode = function (id) {
@@ -23,27 +21,25 @@ export function create() {
 
 	this.addData = data => {
 		data.nodes.forEach(n => {
-			this.addNode(n.name);	
+			this.addNode(n);	
 		});
 
 		data.links.forEach(l => {
 			this.addLink(l.target, l.source, 10);
 		});
+		update();
 	}
 
-	var color = d3.scale.category10();
-
 	var graph = d3.select("body")
-			.append("svg:svg")
+			.append("svg")
 			.attr("width", width)
-			.attr("height", height)
-			.attr("id", "svg")
-			.attr("pointer-events", "all")
-			.attr("viewBox", "0 0 " + width + " " + height)
-			.attr("perserveAspectRatio", "xMinYMid")
-			.append('svg:g');
+			.attr("height", height);
 
-	var force = d3.layout.force();
+	var force = d3.layout.force()
+			      .charge(-400)
+				  .linkDistance(40)
+				  .size([width, height]);
+
 	var nodes = force.nodes(), links = force.links();
 
 	var update = function () {
@@ -66,24 +62,23 @@ export function create() {
 				.attr("class", "node")
 				.call(force.drag);
 
-		nodeEnter.append("svg:circle")
-				.attr("r", 12)
+		nodeEnter.append("circle")
+				.attr("r", 6)
 				.attr("id", d => d.id)
-				.attr("class", "nodeStrokeClass")
-				.attr("fill", d => color(d.id));
+				.attr("class", "nodeStrokeClass");
 
-		nodeEnter.append("svg:text")
+		nodeEnter.append("text")
 				.attr("class", "textClass")
-				.attr("x", 14)
-				.attr("y", ".31em")
+				.attr("x", 8)
+				.attr("y", "-.61em")
 				.text(d => d.id);
 
 		node.exit().remove();
 
 		force.on("tick", function () {
-			node.attr("transform", d => {
-				return "translate(" + d.x + "," + d.y + ")";
-			});
+			node
+				.attr("transform", d => "translate(" + d.x + "," + d.y + ")")
+				.attr("fill", d => d.status ? "green" : "red");
 
 			link.attr("x1", d => d.source.x)
 				.attr("y1", d => d.source.y)
@@ -92,19 +87,17 @@ export function create() {
 		});
 
 		// Restart the force layout.
-		force
-			.gravity(-.01)
-			.charge(-1000)
-			.friction(0)
-			.linkStrength(0.1)
-			.linkDistance(d => d.value * 15)
-			.size([width, height])
-			.start();
+		force.start();
 
-	   	d3.selectAll(".node").forEach(node => {
-            var parent = node[0].parentNode;
-            parent.appendChild(node[0]);
+	   	d3.selectAll(".node").forEach(nodeArr => {
+			var g = nodeArr[0];
+            var parent = g.parentNode;
+            parent.appendChild(g);
         });
+
+		//nodes.forEach(n => {
+	//		n.fixed = true;
+	//	});
 	};
 
 	return this;

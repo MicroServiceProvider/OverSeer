@@ -1,11 +1,11 @@
 
 .link {
   stroke: green;
-  stroke-width: 2px;
+  stroke-width: 1px;
 }
 
 .node text {
-  font-size: 13px;
+  font-size: 8px;
   stroke: #333;
   cursos: pointer;
 }
@@ -14,8 +14,7 @@
 	stroke: #323232;
 	font-family: "Lucida Grande", "Droid Sans", Arial, Helvetica, sans-serif;
 	font-weight: normal;
-	stroke-width: .5;
-	font-size: 14px;
+	font-size: 4px;
 }
 
 .node > circle status-ok {

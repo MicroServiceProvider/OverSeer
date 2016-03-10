@@ -26,7 +26,7 @@ var forEachChildNode = function(node, func) {
 }
 
 export function addNodes (structure, obj) {
-  obj.addNode({ "name": structure.name, "type": structure.serviceType });
+  obj.addNode({ "name": structure.name, "type": structure.serviceType, "status": structure.status });
   forEachChildNode(structure, (c, p) => obj.addNode(c));
   forEachChildNode(structure, (c, p) => obj.addLink(c.name, p.name));
   return objects;
